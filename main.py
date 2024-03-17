@@ -1,5 +1,4 @@
 from fastapi import FastAPI
-from typing import Optional
 from openai import OpenAI
 from pinecone import Pinecone
 import utils.retriever as retriever
