@@ -23,5 +23,21 @@ app = FastAPI()
 @app.get("/search/{query}")
 def search(query: str):
     embed = retriever.get_embedding(openai_client,query)
-    results = retriever.get_matches(index,embed,namespace='servicecloud')
+    response = retriever.get_matches(index,embed,namespace='demo')
+    results = {}
+    for match in response["matches"]:
+        results.append(match["metadata"]["content"])
+
+    return results.to_dict()
+
+@app.get("/documents/{query}")
+def documents(query: str):
+    embed = retriever.get_embedding(openai_client,query)
+    results = retriever.get_matches(index,embed,namespace='demo')
+    return results.to_dict()
+
+@app.get("/conversations/{query}")
+def documents(query: str):
+    embed = retriever.get_embedding(openai_client,query)
+    results = retriever.get_matches(index,embed,namespace='demo')
     return results.to_dict()
