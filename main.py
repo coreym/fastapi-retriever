@@ -8,7 +8,7 @@ PINECONE_API_KEY = os.getenv('PINECONE_KEY')
 OPENAI_API_KEY = os.getenv('OPENAI_KEY')
 
 pc = Pinecone(api_key=PINECONE_API_KEY)
-index = pc.Index("testindex")
+index = pc.Index("demo")
 openai_client = OpenAI(api_key=OPENAI_API_KEY)
 app = FastAPI()
 
@@ -25,12 +25,13 @@ def search(query: str):
     embed = retriever.get_embedding(openai_client,query)
     conversations = retriever.get_matches(index,embed,namespace='conversations')
     documents = retriever.get_matches(index,embed,namespace='documents')
-    results = {}
+    results = {"conversations":[],
+                "documents":[]}
     for match in conversations["matches"]:
-        results.append(match["metadata"]["content"])
+        results["conversations"].append(match["metadata"]["content"])
     for match in documents["matches"]:
-        results.append(match["metadata"]["content"])
-    return results.to_dict()
+        results["documents"].append(match["metadata"]["content"])
+    return results
 
 @app.get("/documents/{query}")
 def documents(query: str):
