@@ -19,12 +19,3 @@ def get_matches(pinecone_client,query_vector,top_k=3,**kwargs):
         clientargs['namespace'] = ns
     response = pinecone_client.query(**clientargs)
     return response
-# def format_for_gpt(ra)
-# app = FastAPI()
-# @app.get("/")
-# def root():
-#     return {"message": "Hello World!"}
-
-# @app.get("/search/{query}")
-# def search(query: str):
-#     return f"Searching for {query}..."

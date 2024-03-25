@@ -43,7 +43,7 @@ def process_csv(input_file, input_column_index, output_file):
         tempdf = chunk
         embeddingslist = []
         embeddings = get_embeddings_batch(chunk[input_column_index].tolist())
-        for i in embeddings.data: #list comprehension here? 
+        for i in embeddings.data: 
             embeddingslist.append(i.embedding)
         tempdf['embedding']=embeddingslist
         dflist.append(tempdf)
@@ -52,21 +52,30 @@ def process_csv(input_file, input_column_index, output_file):
     df_with_embeddings.to_csv(output_file) 
     return df_with_embeddings
     
-# write dataframe to pinecone
 def upsert_to_pinecone(pc_client,df,index_col,metadata_col,embedding_col,namespace,PINECONE_BATCHSIZE=100):
-     # doesn't work currently with a dataframe loaded from csv output, 
-     # needs to be the dataframe output of process_csv()
-     for i in range(0, len(df), PINECONE_BATCHSIZE):
+    """
+    Processes a pandas dataframe (from process_csv()) to upsert to a pinecone index. 
+
+    Parameters:
+    - pc_client: a Pinecone Index object
+    - df: the dataframe from process_csv()
+    - index_col: the column containing a unique ID for the pinecone record
+    - metadata_col: the column containing the raw string data to include in the record metadata
+    - embedding_col: column of vector embedding lists
+    - namespace: pinecone index namespace
+    - PINECONE_BATCHSIZE: number of records to upsert at a time
+    """
+    for i in range(0, len(df), PINECONE_BATCHSIZE):
      # Get the current chunk of data.
-          batch = df[i:i+100]
-          batchvectors = []
-          for i,row in batch.iterrows(): 
-               batchvectors.append(dict(id=str(row[index_col]), 
-                                        metadata=dict(conversation=row[metadata_col]),
-                                        values=row[embedding_col]))
+        batch = df[i:i+100]
+        batchvectors = []
+        for i,row in batch.iterrows(): 
+            batchvectors.append(dict(id=str(row[index_col]), 
+                                    metadata=dict(conversation=row[metadata_col]),
+                                    values=row[embedding_col]))
         #   print(batchvectors[0])
-          pc_client.upsert(
-               vectors=batchvectors,
-               namespace=namespace
-          )
-        
+        pc_client.upsert(
+            vectors=batchvectors,
+            namespace=namespace
+        )
+    

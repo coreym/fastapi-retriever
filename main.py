@@ -12,16 +12,15 @@ index = pc.Index("demo")
 openai_client = OpenAI(api_key=OPENAI_API_KEY)
 app = FastAPI()
 
-# @app.get("/")
-# async def root():
-#     return {"message": "Hello World"}
-
-# @app.get("/items/{item_id}")
-# def read_item(item_id: int, q: Optional[str] = None):
-#     return {"item_id": item_id, "q": q}
-
 @app.get("/search/{query}")
 def search(query: str):
+    """main search endpoint - returns k=3 matches for records in the 'conversations' and 'documents'
+    namespaces. 
+    Args:
+        query (str): search query
+    Returns:
+        dict: results
+    """
     embed = retriever.get_embedding(openai_client,query)
     conversations = retriever.get_matches(index,embed,namespace='conversations')
     documents = retriever.get_matches(index,embed,namespace='documents')
