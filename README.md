@@ -1,8 +1,8 @@
-# FastAPI based Retriever/Indexer service for connecting OpenAI Custom GPTs to a Pinecone vector store. 
+# FastAPI based Retriever/Indexer service over Pinecone, optimized for deployment on render.com
 
 ## Manual Steps
 
-1. You may use this repository directly or [create your own repository from this template](https://github.com/render-examples/fastapi/generate) if you'd like to customize the code.
+1. Index your data in Pinecone with openAI text-embedding-3-small (sample notebook coming)
 2. Create a new Web Service on Render.
 3. Populate the OPENAI_KEY and PINECONE_KEY environment variables with your API keys.
 4. Specify the URL to this repository
